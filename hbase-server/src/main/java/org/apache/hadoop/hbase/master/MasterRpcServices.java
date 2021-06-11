@@ -1624,6 +1624,7 @@ public class MasterRpcServices extends RSRpcServices implements
 
   /**
    * Triggers an asynchronous attempt to take a snapshot.
+   *  Master RPC server 创建 snapshot
    * {@inheritDoc}
    */
   @Override
@@ -1641,6 +1642,7 @@ public class MasterRpcServices extends RSRpcServices implements
       master.snapshotManager.takeSnapshot(snapshot);
 
       // send back the max amount of time the client should wait for the snapshot to complete
+      // default time 5 分钟
       long waitTime = SnapshotDescriptionUtils.getMaxMasterTimeout(master.getConfiguration(),
         snapshot.getType(), SnapshotDescriptionUtils.DEFAULT_MAX_WAIT_TIME);
       return SnapshotResponse.newBuilder().setExpectedTimeout(waitTime).build();

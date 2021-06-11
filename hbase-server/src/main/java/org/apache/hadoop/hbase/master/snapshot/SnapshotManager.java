@@ -583,6 +583,7 @@ public class SnapshotManager extends MasterProcedureManager implements Stoppable
 
   /**
    * Take a snapshot based on the enabled/disabled state of the table.
+   *  snapshot 并发度为1，即同一个集群中snapshot是串行执行的
    * @param snapshot
    * @throws HBaseSnapshotException when a snapshot specific exception occurs.
    * @throws IOException when some sort of generic IO exception occurs.

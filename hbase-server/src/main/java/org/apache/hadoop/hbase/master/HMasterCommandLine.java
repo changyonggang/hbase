@@ -77,6 +77,7 @@ public class HMasterCommandLine extends ServerCommandLine {
     return USAGE;
   }
 
+  // 在HMaster启动过程中,tool.run(toolArgs)也即HMasterComandLine.run(toolArgs)
   @Override
   public int run(String args[]) throws Exception {
     boolean shutDownCluster = false;
@@ -144,7 +145,7 @@ public class HMasterCommandLine extends ServerCommandLine {
     }
 
     String command = remainingArgs.get(0);
-
+    // start、stop、clear 命令
     if ("start".equals(command)) {
       return startMaster();
     } else if ("stop".equals(command)) {
@@ -164,9 +165,10 @@ public class HMasterCommandLine extends ServerCommandLine {
       return 1;
     }
   }
-
+  // TODO:: HMaster 启动流程
   private int startMaster() {
     Configuration conf = getConf();
+    // TODO:: trace 做些什么？
     TraceUtil.initTracer(conf);
 
     try {
@@ -255,7 +257,9 @@ public class HMasterCommandLine extends ServerCommandLine {
           LOG.info("Won't bring the Master up as a shutdown is requested");
           return 1;
         }
+        // 将 HMaster 启动放入就绪队列
         master.start();
+        // 启动 HMaster 子线程
         master.join();
         if(master.isAborted())
           throw new RuntimeException("HMaster Aborted");

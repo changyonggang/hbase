@@ -501,6 +501,7 @@ public class HMaster extends HRegionServer implements MasterServices {
     try {
       Threads.setDaemonThreadRunning(new Thread(() -> {
         try {
+          // TODO:: JettyServer 是干什么的？
           int infoPort = putUpJettyServer();
           startActiveMasterManager(infoPort);
         } catch (Throwable t) {
@@ -2044,8 +2045,9 @@ public class HMaster extends HRegionServer implements MasterServices {
 
     return procId;
   }
-
+  // TODO:: 此处是 HMaster 启动的核心，没有搞明白
   private void startActiveMasterManager(int infoPort) throws KeeperException {
+    // 添加一个 backup master 节点，在ZooKeeper中写入一个临时节点
     String backupZNode = ZNodePaths.joinZNode(
       zooKeeper.getZNodePaths().backupMasterAddressesZNode, serverName.toString());
     /*
@@ -2855,6 +2857,7 @@ public class HMaster extends HRegionServer implements MasterServices {
 
   /**
    * @see org.apache.hadoop.hbase.master.HMasterCommandLine
+   *  HMaster组件启动入口
    */
   public static void main(String [] args) {
     LOG.info("STARTING service " + HMaster.class.getSimpleName());
