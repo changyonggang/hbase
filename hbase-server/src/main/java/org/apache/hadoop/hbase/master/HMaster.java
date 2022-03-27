@@ -504,11 +504,13 @@ public class HMaster extends HRegionServer implements MasterServices {
 
   // Main run loop. Calls through to the regionserver run loop AFTER becoming active Master; will
   // block in here until then.
+  // ! 1. 这个方法是循环调用吗？ 2. 具体实现逻辑是什么？
   @Override
   public void run() {
     try {
       Threads.setDaemonThreadRunning(new Thread(() -> {
         try {
+          // HBase启动时采用嵌入式的方式来启动Jetty，因此可以通过web界面对HBase进行管理和查看当前运行的一些状态，非常轻巧
           int infoPort = putUpJettyServer();
           startActiveMasterManager(infoPort);
         } catch (Throwable t) {
@@ -2088,7 +2090,8 @@ public class HMaster extends HRegionServer implements MasterServices {
 
     return procId;
   }
-
+  // ! 这个地方需要仔细分析一下
+  // https://blog.csdn.net/Gloria_y/article/details/109122784?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_title~default-0.pc_relevant_default&spm=1001.2101.3001.4242.1&utm_relevant_index=2
   private void startActiveMasterManager(int infoPort) throws KeeperException {
     String backupZNode = ZNodePaths.joinZNode(
       zooKeeper.getZNodePaths().backupMasterAddressesZNode, serverName.toString());
@@ -2118,6 +2121,7 @@ public class HMaster extends HRegionServer implements MasterServices {
         Threads.sleep(timeout);
       }
     }
+    // MonitoredTask 是做什么的？
     MonitoredTask status = TaskMonitor.get().createStatus("Master startup");
     status.setDescription("Master startup");
     try {
@@ -2900,6 +2904,7 @@ public class HMaster extends HRegionServer implements MasterServices {
   /**
    * @see org.apache.hadoop.hbase.master.HMasterCommandLine
    */
+  // ! HMaster 程序启动入口
   public static void main(String [] args) {
     LOG.info("STARTING service " + HMaster.class.getSimpleName());
     VersionInfo.logVersion();

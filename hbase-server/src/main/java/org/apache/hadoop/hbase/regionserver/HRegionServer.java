@@ -3219,6 +3219,7 @@ public class HRegionServer extends Thread implements
   /**
    * @see org.apache.hadoop.hbase.regionserver.HRegionServerCommandLine
    */
+  // ! RegonServer 程序启动入口
   public static void main(String[] args) {
     LOG.info("STARTING executorService " + HRegionServer.class.getSimpleName());
     VersionInfo.logVersion();
